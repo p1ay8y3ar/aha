@@ -4,7 +4,7 @@ Description: first and second homework of InfoTheory
 Author: p1ay8y3ar
 Date: 2021-03-28 15:27:36
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-03-28 23:56:31
+LastEditTime: 2021-03-29 00:34:17
 Email: p1ay8y3ar@gmail.com
 '''
 
@@ -126,7 +126,7 @@ class Practice2:
             for i in range(len(t)):
                 prob.append(Utils.prod([Fr(InfoModel[x]) for x in t[i]]))
             if sum(prob) > 1 - (R - self.c_ent.calc()):
-
+                
                 return r
             else:
                 N_th += 1
@@ -297,3 +297,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
