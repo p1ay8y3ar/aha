@@ -3,10 +3,11 @@ Description: use Rabin PK to en/decrypt
 Author: p1ay8y3ar
 Date: 2021-03-30 14:22:56
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-03-30 17:01:06
+LastEditTime: 2021-03-30 17:22:36
 Email: p1ay8y3ar@gmail.com
 '''
 import random
+import math
 
 
 class PrimeTools:
@@ -122,6 +123,42 @@ class PrimeTools:
                 return prime_number
             else:
                 continue
+
+
+class PKSRabin:
+    '''
+    基于rabin的公钥系统，注意 public key= n, private key=p,q e=2
+    '''
+    tools = PrimeTools()
+
+    def __init__(self) -> None:
+        pass
+
+    def keygen(self, bit=2048) -> tuple:
+        while 1:
+            p = PrimeTools.prime(bit)
+            if not PrimeTools.MBTest(p, math.ceil(math.log2(p))):
+                continue
+            if p % 4 != 3:
+                continue
+            break
+        while 1:
+            q = PrimeTools.prime(bit)
+            if not PrimeTools.MBTest(q, math.ceil(math.log2(q))):
+                continue
+            if q % 4 != 3:
+                continue
+            break
+        return (p, q, p*q)
+
+    def encrypt():
+        pass
+
+    def decrypt():
+        pass
+
+    def sign():
+        pass
 
 
 print(PrimeTools.euclid(42382, 100))
