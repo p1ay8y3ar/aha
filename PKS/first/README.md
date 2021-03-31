@@ -3,7 +3,7 @@
  * @Author: p1ay8y3ar
  * @Date: 2021-03-30 14:42:18
  * @LastEditor: p1ay8y3ar
- * @LastEditTime: 2021-03-31 19:48:18
+ * @LastEditTime: 2021-03-31 20:56:17
  * @Email: p1ay8y3ar@gmail.com
 -->
 
@@ -33,7 +33,9 @@
   - [x] 加密`encrypt`
   - [x] 解密 `decrypt`
 
-- [ ] RsaSignaturer
+- [x] RsaSignaturer
   
-  - [ ] `sign`
-  - [ ] `verify`
+  - [x] `sign`
+  - [x] `unsign`
+
+- [ ] main logic

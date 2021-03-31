@@ -3,13 +3,14 @@ Description: use Rabin PKS to en/decrypt
 Author: p1ay8y3ar
 Date: 2021-03-30 14:22:56
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-03-31 19:45:45
+LastEditTime: 2021-03-31 20:55:37
 Email: p1ay8y3ar@gmail.com
 '''
 import random
 import math
 import sys
 import base64
+import hashlib
 
 
 class Utils:
@@ -30,6 +31,10 @@ class Utils:
     @staticmethod
     def str2num(s: str) -> int:
         return int.from_bytes(s.encode('utf-8'), "big")
+
+
+class ErrorPrint(Exception):
+    pass
 
 
 class PrimeTools:
@@ -151,33 +156,11 @@ class PrimeTools:
             else:
                 continue
 
-    @staticmethod
-    def myPow(x: float, n: int) -> float:
-        def quickMul(N):
-            ans = 1.0
-            # 贡献的初始值为 x
-            x_contribute = x
-            # 在对 N 进行二进制拆分的同时计算答案
-            while N > 0:
-                if N % 2 == 1:
-                    # 如果 N 二进制表示的最低位为 1，那么需要计入贡献
-                    ans *= x_contribute
-                # 将贡献不断地平方
-                x_contribute *= x_contribute
-                # 舍弃 N 二进制表示的最低位，这样我们每次只要判断最低位即可
-                N //= 2
-            return ans
-
-        return quickMul(n) if n >= 0 else 1.0 / quickMul(-n)
-
 
 class PKSRabin:
     '''
     基于rabin的公钥系统，注意 public key= n, private key=p,q e=2
     '''
-    p: int
-    q: int
-    n: int
     e = 2
     __utils = Utils()
     __is_debug = None
@@ -188,7 +171,7 @@ class PKSRabin:
         self.__is_debug = is_debuging  # 设置调试模式的日志标志
 
     def _debug_print(self, data, color=1) -> None:
-
+        "just use for  debug"
         if self.__is_debug:
             if color == 1:
                 self.__utils.gray("PKSRabin Debug--> {}".format(data))
@@ -224,7 +207,15 @@ class PKSRabin:
             self.p, self.q, self.n))
         return (self.p, self.q, self.n)
 
-    def encrypt(self, pubkey, data) -> str:
+    def encrypt(self, pubkey: int, data: str) -> str:
+        '''
+            encrypt data
+            input:
+                pubkey:int
+                data:str
+            output:
+                encrypted string(as base32 encode)
+        '''
         try:
             m = self.__utils.str2num(data)
             c = self.tools.fast_mod(m, self.e, pubkey)
@@ -235,15 +226,23 @@ class PKSRabin:
                 "{},error:{}".format(sys._getframe().f_code.co_name, e), 2)
         return base64.b32encode(str(c).encode('utf-8')).decode('utf-8')
 
-    def decrypt(self, p, q, data) -> str:
+    def decrypt(self, p: int, q: int, data: str) -> str:
+        '''
+            decrypt messages
+            input : 
+                p:int ,prime
+                q:int ,prime
+                data:encrypted data
+            output:
+                decrypted  message string
+        '''
         try:
             data = int(base64.b32decode(data.encode('utf-8')))
 
             n = p * q
             m_p = self.tools.fast_mod(data, (p + 1) // 4, p)
             m_q = self.tools.fast_mod(data, (q + 1) // 4, q)
-            gcd, t_1, t_2 = self.tools.exEuclid(p, q)
-            print(gcd, t_1, t_2)
+            _, t_1, t_2 = self.tools.exEuclid(p, q)
             a = (t_1 * p * m_q + t_2 * q * m_p) % n
             b = n - a
             c = (t_1 * p * m_q - t_2 * q * m_p) % n
@@ -253,21 +252,72 @@ class PKSRabin:
             print("decrypt wrong", e)
 
     def _right_m(self, num_list: list) -> str:
-
+        '''
+            choice the right string from  4 result
+            input:num_list:list
+            output:str,the right string
+        '''
         for i in num_list:
             try:
                 m = self.__utils.num2str(i).decode("utf-8")
                 return m
             except Exception:
                 continue
-
-    def sign():
-        pass
+        return "WRONG KEY"
 
 
-class RsaSignaturer:
-    def __init__(self, ) -> None:
-        pass
+class RsaSign(PKSRabin):
+    def __init__(self, is_debuging=False) -> None:
+        super(RsaSign, self).__init__(is_debuging)
+
+    def eu_fun(self, p: int, q: int) -> int:
+        """
+        euler function
+        """
+        if self.tools.euclid(p, q) != 1:
+            raise ErrorPrint("not support now")
+        return (p - 1) * (q - 1)
+
+    def k_gen(self, bit: int) -> tuple:
+        p, q, _ = self.keygen(bit)
+        f_n = self.eu_fun(p, q)
+        # it's a prime,do not need test again
+        e = self.tools.prime(bit)
+        d = self.tools.modular_inverse(e, f_n)
+        return (p, q, e, d)
+
+    def sign(self, d: int, p: int, q: int, msg: str) -> str:
+        '''
+        digital sign for message
+            input:
+                int,int,int,string
+            output:
+                string
+                signature, show as b32 encoded
+        '''
+        digest = hashlib.sha1(msg.encode("utf-8")).hexdigest()
+        m = self.__utils.str2num(digest)
+        c = self.tools.fast_mod(m, d, p * q)
+        return base64.b32encode(str(c).encode('utf-8')).decode('utf-8')
+
+    def unsign(self, e: int, n: int, signature: str) -> str:
+        '''
+            unsign the signature
+            input:
+                e:int,n:int as public key{e,n}
+                signature:
+                    str
+            output:
+                string
+                sha1 digest
+        '''
+        c = int(base64.b32decode(signature.encode('utf-8')))
+        h = self.tools.fast_mod(c, e, n)
+        return self.__utils.num2str(h)
+
+
+class BussinessLogic:
+    pass
 
 
 # print(PrimeTools.euclid(42382, 100))
@@ -280,9 +330,6 @@ class RsaSignaturer:
 # print(PrimeTools.MBTest(PrimeTools.prime(1024), 10))
 # print("进行公私钥生成")
 xx = PKSRabin(is_debuging=True)
-n = 7018221061760091733732578227300176401325002700414774359785301229462398414224337391052484099656308778387521412668889226698212483163837949462399856412292653
-q = 97808415276944083596322722245170868319106988509057121910861925410038775898919
-p = 71754777356202231425189567948224179978078430140634671157658118607008406069387
-p, q, n = xx.keygen(1024)
-c = xx.encrypt(n, 'hello my world')
-xx.decrypt(p, q, c)
+p, q, n = xx.keygen(512)
+c = xx.encrypt(n, 'hello my world this is a long message')
+print(xx.decrypt(p, q, c))
