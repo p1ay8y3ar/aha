@@ -3,16 +3,16 @@
  * @Author: p1ay8y3ar
  * @Date: 2021-03-30 14:42:18
  * @LastEditor: p1ay8y3ar
- * @LastEditTime: 2021-03-30 17:23:54
+ * @LastEditTime: 2021-03-31 17:46:44
  * @Email: p1ay8y3ar@gmail.com
 -->
 
 ## todo list
 
-- [ ] sqllit for user store
+- [ ] sqllite for user store
 
   - [ ] 用户密码使用 md5 保存
-  - [ ] 针对用户生成唯一的公钥和私钥
+  - [ ] 保存用户的私钥
 
 - [x] 质数工具 PrimeTools
   - [x] gcd `euclid`
@@ -24,6 +24,6 @@
 
 - [ ] PKSRabin
   - [x] 产生私钥和公钥`keygen`
-  - [ ] 加密`encrypt`
-  - [ ] 解密 `decrypt`
+  - [x] 加密`encrypt`
+  - [x] 解密 `decrypt`
   - [ ] 签名 `sign`
