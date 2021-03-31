@@ -3,7 +3,7 @@ Description: use Rabin PKS to en/decrypt
 Author: p1ay8y3ar
 Date: 2021-03-30 14:22:56
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-03-31 17:23:48
+LastEditTime: 2021-03-31 19:45:45
 Email: p1ay8y3ar@gmail.com
 '''
 import random
@@ -20,6 +20,16 @@ class Utils:
     @staticmethod
     def red(data):
         print("\033[31m {} \033[0m".format(data))
+
+    @staticmethod
+    def num2str(num: int) -> str:
+        n_bits = num.bit_length()
+        n_bytes = (n_bits + 7) >> 3
+        return num.to_bytes(n_bytes, "big")
+
+    @staticmethod
+    def str2num(s: str) -> int:
+        return int.from_bytes(s.encode('utf-8'), "big")
 
 
 class PrimeTools:
@@ -216,8 +226,7 @@ class PKSRabin:
 
     def encrypt(self, pubkey, data) -> str:
         try:
-            m = int(''.join([str(ord(x)) for x in list(data)]))
-            print("进行转换", m)
+            m = self.__utils.str2num(data)
             c = self.tools.fast_mod(m, self.e, pubkey)
             print("加密后的c", c)
         except Exception as e:
@@ -228,9 +237,8 @@ class PKSRabin:
 
     def decrypt(self, p, q, data) -> str:
         try:
-
             data = int(base64.b32decode(data.encode('utf-8')))
-            print("解密后的c", data)
+
             n = p * q
             m_p = self.tools.fast_mod(data, (p + 1) // 4, p)
             m_q = self.tools.fast_mod(data, (q + 1) // 4, q)
@@ -240,11 +248,25 @@ class PKSRabin:
             b = n - a
             c = (t_1 * p * m_q - t_2 * q * m_p) % n
             d = n - c
-            print(a, b, c, d)
+            return self._right_m([a, b, c, d])
         except Exception as e:
-            print("错误", e)
+            print("decrypt wrong", e)
+
+    def _right_m(self, num_list: list) -> str:
+
+        for i in num_list:
+            try:
+                m = self.__utils.num2str(i).decode("utf-8")
+                return m
+            except Exception:
+                continue
 
     def sign():
+        pass
+
+
+class RsaSignaturer:
+    def __init__(self, ) -> None:
         pass
 
 
@@ -261,6 +283,6 @@ xx = PKSRabin(is_debuging=True)
 n = 7018221061760091733732578227300176401325002700414774359785301229462398414224337391052484099656308778387521412668889226698212483163837949462399856412292653
 q = 97808415276944083596322722245170868319106988509057121910861925410038775898919
 p = 71754777356202231425189567948224179978078430140634671157658118607008406069387
-p, q, n = xx.keygen(128)
-c = xx.encrypt(n, 'hello')
+p, q, n = xx.keygen(1024)
+c = xx.encrypt(n, 'hello my world')
 xx.decrypt(p, q, c)
