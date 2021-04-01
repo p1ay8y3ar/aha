@@ -3,7 +3,7 @@
  * @Author: p1ay8y3ar
  * @Date: 2021-03-30 14:42:18
  * @LastEditor: p1ay8y3ar
- * @LastEditTime: 2021-04-01 19:36:28
+ * @LastEditTime: 2021-04-01 19:37:22
  * @Email: p1ay8y3ar@gmail.com
 -->
 
@@ -35,11 +35,13 @@ login success
 when reg successed ,will auto gen rabin and rsa key,then store to datebase.
 
 if wan to regenerate key,can push **reg_allkey** button
+
 ![](./img/keyreg.png)
 
 ### down public key
 
 push **dl_rabin_pubkey** and select path to save pubkey
+
 ![](./img/pubkeypath.png)
 ![](./img/savepubkeys.png)
 
