@@ -3,7 +3,7 @@ Description: use Rabin PKS to en/decrypt
 Author: p1ay8y3ar
 Date: 2021-03-30 14:22:56
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-03-31 20:55:37
+LastEditTime: 2021-04-01 18:36:48
 Email: p1ay8y3ar@gmail.com
 '''
 import random
@@ -11,6 +11,7 @@ import math
 import sys
 import base64
 import hashlib
+import binascii
 
 
 class Utils:
@@ -219,7 +220,7 @@ class PKSRabin:
         try:
             m = self.__utils.str2num(data)
             c = self.tools.fast_mod(m, self.e, pubkey)
-            print("加密后的c", c)
+            # print("加密后的c", c)
         except Exception as e:
             self.__utils.red("error to encrypt,{}".format(e))
             self._debug_print(
@@ -267,6 +268,8 @@ class PKSRabin:
 
 
 class RsaSign(PKSRabin):
+    __utils = Utils()
+
     def __init__(self, is_debuging=False) -> None:
         super(RsaSign, self).__init__(is_debuging)
 
@@ -282,7 +285,11 @@ class RsaSign(PKSRabin):
         p, q, _ = self.keygen(bit)
         f_n = self.eu_fun(p, q)
         # it's a prime,do not need test again
-        e = self.tools.prime(bit)
+        while 1:
+            e = self.tools.prime(bit)
+            if self.tools.euclid(e, f_n) != 1:
+                continue
+            break
         d = self.tools.modular_inverse(e, f_n)
         return (p, q, e, d)
 
@@ -295,9 +302,12 @@ class RsaSign(PKSRabin):
                 string
                 signature, show as b32 encoded
         '''
-        digest = hashlib.sha1(msg.encode("utf-8")).hexdigest()
-        m = self.__utils.str2num(digest)
-        c = self.tools.fast_mod(m, d, p * q)
+        digest = binascii.crc32(msg.encode('utf-8'))
+        # print("哈希", digest)
+        # m = self.__utils.str2num(digest)
+        # print("这是m", m)
+        c = self.tools.fast_mod(digest, d, p * q)
+        # print("这是c", c)
         return base64.b32encode(str(c).encode('utf-8')).decode('utf-8')
 
     def unsign(self, e: int, n: int, signature: str) -> str:
@@ -311,9 +321,12 @@ class RsaSign(PKSRabin):
                 string
                 sha1 digest
         '''
+        # print("gg", base64.b32decode(signature.encode('utf-8')))
         c = int(base64.b32decode(signature.encode('utf-8')))
+        # print("unsign c", c)
         h = self.tools.fast_mod(c, e, n)
-        return self.__utils.num2str(h)
+        
+        return h
 
 
 class BussinessLogic:
@@ -324,12 +337,34 @@ class BussinessLogic:
 # print(PrimeTools.exEuclid(6, 5))
 # print(PrimeTools.fast_mod(82387283, 9999999999999232399, 13))
 
-# print(PrimeTools.modular_inverse(789, 5))
+# print(PrimeTools.modular_inverse(12, 5))
 # big_p = PrimeTools.gen_big_prime(2048)
 # print(big_p)
 # print(PrimeTools.MBTest(PrimeTools.prime(1024), 10))
 # print("进行公私钥生成")
-xx = PKSRabin(is_debuging=True)
-p, q, n = xx.keygen(512)
-c = xx.encrypt(n, 'hello my world this is a long message')
-print(xx.decrypt(p, q, c))
+# xx = PKSRabin(is_debuging=True)
+# p, q, n = xx.keygen(512)
+# c = xx.encrypt(n, 'hello my world this is a long message')
+# print(xx.decrypt(p, q, c))
+# rsa = RsaSign()
+
+# p, q, e, d = rsa.k_gen(32)
+# print("p", p)
+# print("q", q)
+# print("e", e)
+# print("d", d)
+# print("n", p * q)
+# print(PrimeTools.modular_inverse(e, (p - 1) * (q - 1)))
+# msg = Utils.str2num("hellowo")
+# print("msg", msg)
+# tmp = PrimeTools.fast_mod(msg, e, p * q)
+# print("tmp", tmp)
+# de = PrimeTools.fast_mod(tmp, d, p * q)
+# print("de大小",de)
+# print(Utils.num2str(de))
+
+# print("----")
+# signed = rsa.sign(d, p, q, "hello")
+
+# unsigned = rsa.unsign(e, p * q, signed)
+# print(unsigned)

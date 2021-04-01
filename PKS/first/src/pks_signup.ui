@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ResigerUI</class>
- <widget class="QWidget" name="ResigerUI">
+ <class>RegisterUI</class>
+ <widget class="QWidget" name="RegisterUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -61,6 +61,9 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="placeholderText">
+    <string>length more than 8</string>
+   </property>
   </widget>
   <widget class="QLineEdit" name="le_pwd">
    <property name="geometry">
@@ -71,6 +74,9 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="placeholderText">
+    <string>length more than 8</string>
+   </property>
   </widget>
   <widget class="QLineEdit" name="le_pwd_again">
    <property name="geometry">
@@ -80,6 +86,9 @@
      <width>191</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="placeholderText">
+    <string>please input agin</string>
    </property>
   </widget>
   <widget class="QPushButton" name="bt_register">
@@ -92,7 +101,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>register</string>
+    <string>OK</string>
    </property>
   </widget>
  </widget>

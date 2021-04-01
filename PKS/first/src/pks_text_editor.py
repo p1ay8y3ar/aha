@@ -20,11 +20,15 @@ class Ui_TextEditor(object):
         self.bt_ok = QtWidgets.QPushButton(TextEditor)
         self.bt_ok.setGeometry(QtCore.QRect(280, 260, 113, 32))
         self.bt_ok.setObjectName("bt_ok")
+        self.bt_load_rabin_pubkey = QtWidgets.QPushButton(TextEditor)
+        self.bt_load_rabin_pubkey.setGeometry(QtCore.QRect(0, 260, 113, 32))
+        self.bt_load_rabin_pubkey.setObjectName("bt_load_rabin_pubkey")
 
         self.retranslateUi(TextEditor)
         QtCore.QMetaObject.connectSlotsByName(TextEditor)
 
     def retranslateUi(self, TextEditor):
         _translate = QtCore.QCoreApplication.translate
-        TextEditor.setWindowTitle(_translate("TextEditor", "Form"))
+        TextEditor.setWindowTitle(_translate("TextEditor", "Encrypt Text"))
         self.bt_ok.setText(_translate("TextEditor", "Ok"))
+        self.bt_load_rabin_pubkey.setText(_translate("TextEditor", "LoadRabinPub"))

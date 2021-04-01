@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
-    <height>273</height>
+    <width>325</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>user</string>
   </property>
   <widget class="QLabel" name="la_showname">
    <property name="geometry">
@@ -29,8 +29,8 @@
   <widget class="QPushButton" name="bt_dl_rabin_pubkey">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>110</y>
+     <x>160</x>
+     <y>70</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -42,34 +42,21 @@
   <widget class="QPushButton" name="bt_generateRabinKey">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>110</y>
+     <x>10</x>
+     <y>120</y>
      <width>141</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>generate_rabinkey</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="bt_dl_raspubkey">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>160</y>
-     <width>141</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>dl_sign_pubkey</string>
+    <string>resign_pubkey</string>
    </property>
   </widget>
   <widget class="QPushButton" name="bt_encrypt_msg">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>200</y>
+     <x>10</x>
+     <y>170</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -81,8 +68,8 @@
   <widget class="QPushButton" name="bt_decrypt_msg">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>200</y>
+     <x>160</x>
+     <y>170</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -94,8 +81,8 @@
   <widget class="QPushButton" name="bt_verify_signature">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>160</y>
+     <x>160</x>
+     <y>120</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -117,30 +104,17 @@
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="bt_changepwd">
+  <widget class="QPushButton" name="bt_regen">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>60</y>
+     <x>10</x>
+     <y>70</y>
      <width>141</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>changepassword</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="bt_change_sign">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>60</y>
-     <width>141</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>changepassword</string>
+    <string>regen_allkey</string>
    </property>
   </widget>
  </widget>
