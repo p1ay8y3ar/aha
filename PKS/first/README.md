@@ -3,7 +3,7 @@
  * @Author: p1ay8y3ar
  * @Date: 2021-03-30 14:42:18
  * @LastEditor: p1ay8y3ar
- * @LastEditTime: 2021-04-01 19:33:47
+ * @LastEditTime: 2021-04-01 19:36:28
  * @Email: p1ay8y3ar@gmail.com
 -->
 
@@ -52,6 +52,7 @@ and `*.pub_rabin` file with **signature** added on,now we use another account to
 ![](./img/vmatch.png)
 
 if we use diffrent rsa pubkey to verify
+
 ![](./img/vfailed.png)
 
 ### resign
@@ -62,10 +63,13 @@ you can push button **reg_allkey** then push **dl_rabin_pubkey** it will resign 
 
 now account is **colehou11**,we use **colehou22**'s rabin public to encrypt a msg
 
+
 ![](./img/e1.png)
+
 ![](./img/e2.png)
 
 now we use account **colehou22** to decypted this msg
+
 ![](./img/u2.png)
 ![](./img/d1.png)
 
