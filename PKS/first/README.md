@@ -3,7 +3,7 @@
  * @Author: p1ay8y3ar
  * @Date: 2021-03-30 14:42:18
  * @LastEditor: p1ay8y3ar
- * @LastEditTime: 2021-04-01 19:37:22
+ * @LastEditTime: 2021-04-01 19:38:22
  * @Email: p1ay8y3ar@gmail.com
 -->
 
@@ -11,6 +11,7 @@
 
 `python main.py`
 The core functions are in the `/script/passcoder.py` file.
+
 Other codes are UI and logic functions
 
 # Features
@@ -28,6 +29,7 @@ Other codes are UI and logic functions
 ## PKS part
 
 login success
+
 ![](./img/user.png)
 
 ### key generate
@@ -43,6 +45,7 @@ if wan to regenerate key,can push **reg_allkey** button
 push **dl_rabin_pubkey** and select path to save pubkey
 
 ![](./img/pubkeypath.png)
+
 ![](./img/savepubkeys.png)
 
 and `*.pub_rabin` file with **signature** added on,now we use another account to verify this signature
@@ -50,7 +53,9 @@ and `*.pub_rabin` file with **signature** added on,now we use another account to
 ### verify signature
 
 ![](./img/v1.png)
+
 ![](./img/vu.png)
+
 ![](./img/vmatch.png)
 
 if we use diffrent rsa pubkey to verify
@@ -73,9 +78,11 @@ now account is **colehou11**,we use **colehou22**'s rabin public to encrypt a ms
 now we use account **colehou22** to decypted this msg
 
 ![](./img/u2.png)
+
 ![](./img/d1.png)
 
 success
+
 ![](./img/d2.png)
 
 # todo list
