@@ -3,13 +3,15 @@
  * @Author: p1ay8y3ar
  * @Date: 2021-03-30 14:42:18
  * @LastEditor: p1ay8y3ar
- * @LastEditTime: 2021-04-01 19:26:17
+ * @LastEditTime: 2021-04-01 19:33:47
  * @Email: p1ay8y3ar@gmail.com
 -->
 
 # Run
 
 `python main.py`
+The core functions are in the `/script/passcoder.py` file.
+Other codes are UI and logic functions
 
 # Features
 
