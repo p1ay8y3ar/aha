@@ -21,7 +21,7 @@ Other codes are UI and logic functions
 ## user part
 
 ### user register
-
+user rabin key protected by user's pwd
 ![](./img/register.png)
 
 ### user login
