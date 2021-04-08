@@ -3,7 +3,7 @@ Description: use Rabin PKS to en/decrypt
 Author: p1ay8y3ar
 Date: 2021-03-30 14:22:56
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-04-01 18:36:48
+LastEditTime: 2021-04-08 00:28:24
 Email: p1ay8y3ar@gmail.com
 '''
 import random
@@ -325,7 +325,7 @@ class RsaSign(PKSRabin):
         c = int(base64.b32decode(signature.encode('utf-8')))
         # print("unsign c", c)
         h = self.tools.fast_mod(c, e, n)
-        
+
         return h
 
 

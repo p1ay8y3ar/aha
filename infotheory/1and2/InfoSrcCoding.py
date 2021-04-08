@@ -4,7 +4,7 @@ Description: first and second homework of InfoTheory
 Author: p1ay8y3ar
 Date: 2021-03-28 15:27:36
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-03-29 00:34:17
+LastEditTime: 2021-04-08 00:26:10
 Email: p1ay8y3ar@gmail.com
 '''
 
@@ -126,7 +126,7 @@ class Practice2:
             for i in range(len(t)):
                 prob.append(Utils.prod([Fr(InfoModel[x]) for x in t[i]]))
             if sum(prob) > 1 - (R - self.c_ent.calc()):
-                
+
                 return r
             else:
                 N_th += 1
@@ -285,10 +285,12 @@ def main():
                 raise ErrorPrint("need input N,use '-n' ")
             s = CodeGen(jd).gen(N, False)
             tmp_p = s.count("1") / N
-            print(Utils.gray("random code seq is:{},'1':{},'0':{}".format(s,tmp_p,(1-tmp_p))))
             print(
-                Utils.red("probability:{}".format(tmp_p**seq.count('1') *
-                                                  (1 - tmp_p)**seq.count('0'))))
+                Utils.gray("random code seq is:{},'1':{},'0':{}".format(
+                    s, tmp_p, (1 - tmp_p))))
+            print(
+                Utils.red("probability:{}".format(
+                    tmp_p**seq.count('1') * (1 - tmp_p)**seq.count('0'))))
         else:
             raise ErrorPrint("Unknow topic number")
     else:
@@ -297,4 +299,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
