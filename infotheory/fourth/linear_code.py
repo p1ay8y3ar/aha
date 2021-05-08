@@ -3,7 +3,7 @@ Description: Editor's info in the top of the file
 Author: p1ay8y3ar
 Date: 2021-05-06 15:23:28
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-05-08 00:40:51
+LastEditTime: 2021-05-08 15:49:19
 Email: p1ay8y3ar@gmail.com
 '''
 
@@ -12,7 +12,7 @@ import numpy as np
 import itertools
 import random
 import json
-
+import argparse
 
 class CodeError(Exception):
     def __init__(self):
@@ -124,11 +124,12 @@ class CodeGen:
         # 求出信息为k
         self.__k = math.ceil(self.__R * self.__n)
         # 求出校验位
+        print("k",self.__k)
         self.__m = self.__n-self.__k
-
+        
         # G
         self.__G = self._G()
-
+        print("G",self.__G)
         # generate STANDAND MATRIX
 
         code_list = []
@@ -169,6 +170,8 @@ class CodeGen:
         # 把数据吸入到json中
         code_tmp = {}
         [code_tmp.update(i) for i in code_list]
+        print("code table\n",code_tmp)
+        print("\nstandard_matrix\n",standard_matrix)
         json_dict = {}
         json_dict["k"] = self.__k
         json_dict["n"] = self.__n
@@ -178,6 +181,7 @@ class CodeGen:
         json_dict["standard_matrix"] = standard_matrix
         with open("info.json", "w") as f:
             f.write(json.dumps(json_dict))
+        print("store in info.json")
 
 
 class Coder:
@@ -239,17 +243,49 @@ class Coder:
 
 
 if __name__ == "__main__":
-    # a = CodeGen(0.5, 6, 0.1)
-    # a.run()
-    # 测试 生成和解密
-    with open("info.json", "r")as f:
-        json_dict = json.load(f)
-        print(json_dict)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m1", action='store_true',help="mode1 use -r -n -p to generate")
+    parser.add_argument("-m2", action='store_true',help="mode1 use -f -m to encode")
+    parser.add_argument("-m3", action='store_true',help="mode1 use -f -y to decode")
+    parser.add_argument("-r", type=float, help='rate')
+    parser.add_argument("-n", type=int, help='code length')
+    parser.add_argument("-p", type=float, help='code error prob')
+    parser.add_argument("-f", type=str, help='info file path')
+    parser.add_argument("-m", type=str, help='msg to encode')
+    parser.add_argument("-y", type=str, help='msg to decocde')
 
-    # 进行加密
-    a = Coder(json_dict["k"], json_dict["n"])
-    encod = a.encode(json_dict["code_table"], msg="hello world",
+    args = parser.parse_args()
+    if args.m1:
+        r=args.r
+        n=args.n 
+        p=args.p 
+        coder=CodeGen(r,n,p)
+        coder.run()
+
+    elif args.m2 or args.m3 :
+        f=args.f 
+        with open("info.json", "r")as f:
+            json_dict = json.load(f)
+        if args.m2:
+            a = Coder(json_dict["k"], json_dict["n"])
+            encod = a.encode(json_dict["code_table"], msg=args.m,
                      p=json_dict["p"], standard_matrix=json_dict["standard_matrix"])
-    print("---解密")
-    b=a.decode(json_dict["standard_matrix"],encod)
-    print(b)
+            print("encode msg are :",encod)
+        elif args.m3:
+            a = Coder(json_dict["k"], json_dict["n"])
+            b=a.decode(json_dict["standard_matrix"],args.y)
+            print("decoded msg are :",b)
+    else:
+        print("please use -h to see help")
+
+    # with open("info.json", "r")as f:
+    #     json_dict = json.load(f)
+    #     print(json_dict)
+
+    # # 进行加密
+    # a = Coder(json_dict["k"], json_dict["n"])
+    # encod = a.encode(json_dict["code_table"], msg="hello world",
+    #                  p=json_dict["p"], standard_matrix=json_dict["standard_matrix"])
+    # print("---解密")
+    # b=a.decode(json_dict["standard_matrix"],encod)
+    # print(b)
