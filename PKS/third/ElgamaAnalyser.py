@@ -3,7 +3,7 @@ Description: Editor's info in the top of the file
 Author: p1ay8y3ar
 Date: 2021-05-11 11:46:56
 LastEditor: p1ay8y3ar
-LastEditTime: 2021-05-11 20:07:10
+LastEditTime: 2021-05-12 18:35:58
 Email: p1ay8y3ar@gmail.com
 '''
 import math
@@ -11,6 +11,7 @@ import random
 from func_timeout import func_set_timeout
 import func_timeout
 from datetime import datetime, time
+import argparse
 
 
 class PrimeTools:
@@ -232,7 +233,7 @@ class Pprint:
 
 class Attacker:
 
-    def Babystep_Giantstep(self, h, g, p, timeout: int, verbose=False):
+    def Babystep_Giantstep(self, h, g, p, timeout: int, verbose=True):
 
         @func_set_timeout(timeout)
         def run():
@@ -292,7 +293,7 @@ class Attacker:
 
                     # bsgs
                     lk = self.Babystep_Giantstep(
-                        power, base, p, timeout=timeout//len(factors))
+                        power, base, p, timeout=timeout//len(factors), verbose=False)
                     l.append(lk)
                     a_i += lk * p_i ** k
                     Pprint.gray('\tFound l_{} = {}'.format(k, lk))
@@ -318,17 +319,101 @@ class Attacker:
             return x
         return run_crt(h, g, p, timeout=timeout)
 
-    def pollard_rho_cosper_circle(self, h, g, p, timeout):
+    def pollard_rho_gosper_circle(self, h, g, p, timeout):
         '''
         this is  a reference code,ill today, give up to write from 0
         '''
-        
+        @func_set_timeout(timeout)
+        def run(h, g, p):
+            h_list = []
+            x_list = []
+            y_list = []
+            x_tmp = 0
+            y_tmp = 0
+            h_tmp = 1
+
+            table = {}
+            tmp_i = 0
+            while 1:
+                h_list.append(h_tmp)
+                x_list.append(x_tmp)
+                y_list.append(y_tmp)
+                tmp_i += 1
+                if p//3 <= h_tmp < 2*p//3:
+                    h_tmp = (h_tmp*h_tmp) % p
+                    x_tmp = (2*x_tmp) % (p-1)
+                    y_tmp = (2*y_tmp) % (p-1)
+                elif 0 <= h_tmp < p//3:
+                    h_tmp = ((h % p)*h_tmp) % p
+                    y_tmp = (y_tmp+1) % (p-1)
+                else:
+                    h_tmp = ((g % p)*h_tmp) % p
+                    x_tmp = (x_tmp+1) % (p-1)
+
+                tmp = tmp_i-1
+                m = 0
+                while tmp and tmp % 2:
+                    tmp //= 2
+                    m += 1
+                table[m] = tmp_i-1
+
+                t = -1
+                for i in table.values():
+                    if h_list[i] == h_tmp:
+                        t = i
+                if t == -1:
+                    pass
+                else:
+                    x_d = (x_tmp-x_list[t]) % (p-1)
+                    y_d = (y_tmp-y_list[t]) % (p-1)
+                    if x_d == 0 and y_d == 0:
+                        return 0
+                    if PrimeTools.euclid(y_d, (p-1)) == 1:
+                        return (-x_d*PrimeTools.modular_inverse(y_d, (p-1))) % (p-1)
+                    d = PrimeTools.euclid(y_d, (p-1))
+                    n_t = (p-1)//d
+                    log_t = (-x_d*PrimeTools.modular_inverse(y_d, n_t)) % n_t
+                    for i in range(d):
+                        Log = log_t+tmp_i*n_t
+                        if pow((g % p), Log, p) == ((h % p)):
+                            Pprint.green(
+                                "pollard_rho found it:{}".format(Log % (p-1)))
+                            return Log % (p-1)
         return run(h, g, p)
 
 
 if __name__ == "__main__":
-    y, g, p = WeakGamalPubKeyGen().gen(20)
-    print(y, g, p)
-    print(Attacker().Babystep_Giantstep(y, g, p, 100))
-    print(Attacker().pohilg_hellman(y, g, p, 100))
-    print(Attacker().pollard_rho_cosper_circle(y, g, p, 100))
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-mode1", action='store_true',
+                        help="generate weak key")
+    parser.add_argument("-mode2", action='store_true', help="fuzz")
+    parser.add_argument("-y", type=int, help='y or h')
+    parser.add_argument("-g", type=int, help='y or a')
+    parser.add_argument("-p", type=int, help='module,prime')
+    parser.add_argument("-t", type=int, help='time limit in seconds')
+    parser.add_argument("-bsgs",
+                        action='store_true',
+                        help="baby step gaint step")
+    parser.add_argument("-hellman",
+                        action='store_true',
+                        help="pohilg_hellman")
+    parser.add_argument("-rho",
+                        action='store_true',
+                        help="pollard rho gosper circle")
+    args = parser.parse_args()
+    if args.mode1:
+        y, g, p = WeakGamalPubKeyGen().gen(random.randint(10, 50))
+        Pprint.green("\ny={}\n,g={}\n,p={}\n".format(y, g, p))
+    elif args.mode2:
+        y = args.y
+        g = args.g
+        p = args.p
+        t = args.t
+
+        if args.bsgs:
+            Attacker().Babystep_Giantstep(y, g, p, t)
+        if args.hellman:
+            Attacker().pohilg_hellman(y, g, p, t)
+        if args.rho:
+            Attacker().pollard_rho_gosper_circle(y, g, p, 100)
